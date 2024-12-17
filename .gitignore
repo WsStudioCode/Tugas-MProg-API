@@ -1,0 +1,9 @@
+# Binary artifacts
+/bin/
+/build/
+/dist/
+
+/go.sum
+/go.mod
+
+.env
