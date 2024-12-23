@@ -1,12 +1,12 @@
 package main
 
 import (
+	"api/config"
+	"api/routes"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"pencatatan-keuangan-api/config"
-	"pencatatan-keuangan-api/routes"
 
 	"github.com/joho/godotenv"
 )
@@ -24,7 +24,7 @@ func main() {
 	}
 
 	config.ConnectDB()
-	routes.RegisterAuthRoutes()
+	routes.RegisterRoutes()
 
 	fmt.Printf("Server started on port %s\n", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))

@@ -1,13 +1,15 @@
 package controllers
 
 import (
+	"api/config"
+	"api/models"
+	"api/utils"
 	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
-	"pencatatan-keuangan-api/config"
-	"pencatatan-keuangan-api/models"
-	"pencatatan-keuangan-api/utils"
+
+	"github.com/google/uuid"
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
@@ -46,9 +48,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"statusCode": http.StatusOK,
-		"success":    true,
-		"message":    "Login successful",
+		"code":    http.StatusOK,
+		"success": true,
+		"message": "Login successful",
 		"data": map[string]interface{}{
 			"username": username,
 			"email":    email,
@@ -72,8 +74,10 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = config.DB.Exec("INSERT INTO users (username, password, email, alamat) VALUES (?,?,?,?)",
-		user.Username, hashedPassword, user.Email, user.Alamat)
+	user.ID = uuid.New().String()
+
+	_, err = config.DB.Exec("INSERT INTO users (id, username, password, email) VALUES (?,?,?,?)",
+		user.ID, user.Username, hashedPassword, user.Email)
 
 	if err != nil {
 		http.Error(w, "Error registering user", http.StatusInternalServerError)
@@ -84,8 +88,8 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"statusCode": http.StatusOK,
-		"success":    true,
-		"message":    "Register successful",
+		"code":    http.StatusOK,
+		"success": true,
+		"message": "Register successful",
 	})
 }
