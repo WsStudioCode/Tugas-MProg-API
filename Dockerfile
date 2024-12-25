@@ -1,12 +1,20 @@
 FROM golang:alpine3.20 AS builder
-WORKDIR /build
+WORKDIR /app
 
-COPY go.mod go.sum .env ./
+COPY go.mod go.sum ./
 RUN go mod download
+
 COPY . .
-RUN go build -o /app .
 
-FROM alpine:3.20
+RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 
-COPY --from=builder /app /app
-CMD ["/app"]
+FROM alpine:latest
+
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /root/
+
+COPY --from=builder /app/main .
+COPY --from=builder /app/.env .
+
+CMD [ "./main" ]

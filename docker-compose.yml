@@ -1,50 +1,48 @@
 services:
- app:
-  container_name: go-api
-  build:
-   context: .
-   dockerfile: Dockerfile
-  image: go-api
-  ports:
-   - 9090:9090
-  environment:
-   DB_HOST: database
-   DB_PORT: 3306
-   DB_USER: test
-   DB_PASSWORD: test
-   DB_NAME: db_pencatatan_keuangan
-  depends_on:
-   - database
-  networks:
-   - go-network
+  app:
+    container_name: go-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: go-api
+    ports:
+      - 9090:9090
+    env_file:
+      - .env
+    depends_on:
+      - database
+    networks:
+      - go-network
 
- database:
-  image: mysql:8
-  restart: always
-  volumes:
-   - dbdata:/var/lib/mysql
-  environment:
-   MYSQL_DATABASE: "db_pencatatan_keuangan"
-   MYSQL_USER: "test"
-   MYSQL_PASSWORD: "test"
-   MYSQL_ROOT_PASSWORD: "test"
-   MYSQL_ROOT_HOST: "%"
-  networks:
-   - go-network
-  ports:
-   - 33090:3306
-  deploy:
-   resources:
-    limits:
-     cpus: "1"
-     memory: 1G
-    reservations:
-     cpus: "0.5"
-     memory: 412M
+  database:
+    image: mysql:8
+    restart: always
+    volumes:
+      - dbdata:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: "db_pencatatan_keuangan"
+      MYSQL_USER: "test"
+      MYSQL_PASSWORD: "test"
+      MYSQL_ROOT_PASSWORD: "test"
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_TCP_PORT: 33090
+    networks:
+      - go-network
+    ports:
+      - 33090:3306
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1G
+        reservations:
+          cpus: "0.5"
+          memory: 412M
 
 volumes:
- dbdata:
+  dbdata:
+
 
 networks:
- go-network:
-  driver: bridge
+  go-network:
+    driver: bridge

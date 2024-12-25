@@ -27,6 +27,17 @@ func GetAllDataTransactions(w http.ResponseWriter, r *http.Request) {
 		transactions = append(transactions, transaction)
 	}
 
+	if len(transactions) == 0 {
+		w.WriteHeader(http.StatusNotFound)
+		response := models.APIResponse{
+			Code:    http.StatusNotFound,
+			Success: false,
+			Message: "No transactions found",
+		}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
 	response := models.APIResponse{
 		Code:    http.StatusOK,
 		Success: true,
@@ -41,7 +52,7 @@ func GetAllDataTransactions(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetDataTransactionById(w http.ResponseWriter, r *http.Request) {
-	var transaction models.Transaction
+	var transactions []models.Transaction
 
 	id := r.URL.Query().Get("id")
 
@@ -50,18 +61,40 @@ func GetDataTransactionById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	query := "SELECT * FROM transactions WHERE id =?"
-	err := config.DB.QueryRow(query, id).Scan(
-		&transaction.ID,
-		&transaction.Amount,
-		&transaction.Description,
-		&transaction.Date,
-		&transaction.UserID,
-		&transaction.Category,
-	)
-
+	query := "SELECT id, amount, description, date, userId, category FROM transactions WHERE id =?"
+	rows, err := config.DB.Query(query, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var transaction models.Transaction
+		err := rows.Scan(
+			&transaction.ID,
+			&transaction.Amount,
+			&transaction.Description,
+			&transaction.Date,
+			&transaction.UserID,
+			&transaction.Category,
+		)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		transactions = append(transactions, transaction)
+	}
+
+	if len(transactions) == 0 {
+		w.WriteHeader(http.StatusNotFound)
+		response := models.APIResponse{
+			Code:    http.StatusNotFound,
+			Success: false,
+			Message: "No transactions found with given ID",
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
 		return
 	}
 
@@ -69,7 +102,7 @@ func GetDataTransactionById(w http.ResponseWriter, r *http.Request) {
 		Code:    http.StatusOK,
 		Success: true,
 		Message: "Data transactions retrieved successfully by id",
-		Data:    transaction,
+		Data:    transactions,
 	}
 
 	log.Printf("Response: %+v", response)
