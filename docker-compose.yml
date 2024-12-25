@@ -14,26 +14,26 @@ services:
    - go-network
 
 database:
-  image: mysql:8
-  restart: always
-  volumes:
+ image: mysql:8
+ restart: always
+ volumes:
   - godata:/var/lib/mysql
-  environment:
-  MYSQL_DATABASE: "db_pencatatan_keuangan"
-  MYSQL_USER: "root"
-  MYSQL_PASSWORD: "root"
-  MYSQL_ROOT_PASSWORD: "root"
-  MYSQL_ROOT_HOST: "%"
-  networks:
+ environment:
+ MYSQL_DATABASE: "db_pencatatan_keuangan"
+ MYSQL_USER: "root"
+ MYSQL_PASSWORD: "root"
+ MYSQL_ROOT_PASSWORD: "root"
+ MYSQL_ROOT_HOST: "%"
+ networks:
   - go-network
-  ports:
+ ports:
   - 33090:3306
-  deploy:
+ deploy:
   resources:
-    limits:
+   limits:
     cpus: "1"
     memory: 1G
-    reservations:
+   reservations:
     cpus: "0.5"
     memory: 412M
 
