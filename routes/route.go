@@ -16,10 +16,13 @@ func HealthCheck(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+func CheckHealtRoutes() {
+	http.HandleFunc("/health", HealthCheck)
+}
+
 func RegisterRoutes() {
 	http.HandleFunc("/login", controllers.Login)
 	http.HandleFunc("/register", controllers.Register)
-	http.HandleFunc("/health", HealthCheck)
 	http.HandleFunc("/transactions", controllers.GetAllDataTransactions)
 	http.HandleFunc("/transactions/get-data", controllers.GetDataTransactionById)
 	http.HandleFunc("/transactions/create", controllers.CreateTransaction)

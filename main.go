@@ -25,6 +25,7 @@ func main() {
 
 	config.ConnectDB()
 	routes.RegisterRoutes()
+	routes.CheckHealtRoutes()
 
 	fmt.Printf("Server started on port %s\n", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
