@@ -1,10 +1,8 @@
 FROM golang:alpine3.20 AS builder
-
 WORKDIR /build
 
 COPY go.mod go.sum .env ./
 RUN go mod download
-
 COPY . .
 RUN go build -o /app .
 
