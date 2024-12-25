@@ -7,25 +7,35 @@ services:
   image: go-api
   ports:
    - 9090:9090
-  env_file:
-   - .env
   depends_on:
    mysql:
     condition: service_healthy
   networks:
    - go-network
 
- mysql:
-  container_name: go-mysql
-  image: mysql:8.0
-  environment:
-   - MYSQL_ROOT_PASSWORD=password
-   - MYSQL_USER=user
-   - MYSQL_PASSWORD=password
-  volumes:
-   - dbdata:/var/lib/mysql
-  networks:
-   - go-network
+  database:
+   image: mysql:8
+   restart: always
+   volumes:
+    - godata:/var/lib/mysql
+   environment:
+    MYSQL_DATABASE: "db_pencatatan_keuangan"
+    MYSQL_USER: "root"
+    MYSQL_PASSWORD: "root"
+    MYSQL_ROOT_PASSWORD: "root"
+    MYSQL_ROOT_HOST: "%"
+   networks:
+    - go-network
+   ports:
+    - 33090:3306
+   deploy:
+    resources:
+     limits:
+      cpus: "1"
+      memory: 1G
+     reservations:
+      cpus: "0.5"
+      memory: 412M
 
 volumes:
  dbdata:
