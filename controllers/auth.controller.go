@@ -37,7 +37,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var username, email, alamat string
+	var username, email string
+	var alamat sql.NullString
 	err = config.DB.QueryRow("SELECT username, email, alamat FROM users WHERE email = ?", user.Email).Scan(&username, &email, &alamat)
 	if err != nil {
 		http.Error(w, `{"message":"Error retrieving user details"}`, http.StatusInternalServerError)

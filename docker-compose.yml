@@ -7,12 +7,6 @@ services:
   image: go-api
   ports:
    - 9090:9090
-  environment:
-   DB_HOST: database
-   DB_PORT: 3306
-   DB_USER: test
-   DB_PASSWORD: test
-   DB_NAME: db_pencatatan_keuangan
   depends_on:
    - database
   networks:
