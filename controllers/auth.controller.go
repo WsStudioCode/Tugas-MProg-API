@@ -46,6 +46,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	alamatValue := ""
+	if alamat.Valid {
+		alamatValue = alamat.String
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
@@ -55,7 +60,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		"data": map[string]interface{}{
 			"username": username,
 			"email":    email,
-			"alamat":   alamat,
+			"alamat":   alamatValue,
 		},
 	})
 }
