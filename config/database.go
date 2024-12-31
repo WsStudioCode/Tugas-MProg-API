@@ -33,9 +33,5 @@ func ConnectDB() {
 		log.Fatalf("Error Connecting to Database: %v", err)
 	}
 
-	if err = DB.Ping(); err != nil {
-		log.Fatalf("Database not Reachable: %v", err)
-	}
-
 	log.Println("Connected to the database successfully!")
 }

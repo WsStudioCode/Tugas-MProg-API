@@ -7,6 +7,8 @@ services:
   image: go-api
   ports:
    - 9090:9090
+  env_file:
+   - .env
   depends_on:
    - database
   networks:
@@ -23,6 +25,7 @@ services:
    MYSQL_PASSWORD: "test"
    MYSQL_ROOT_PASSWORD: "test"
    MYSQL_ROOT_HOST: "%"
+   MYSQL_TCP_PORT: 33090
   networks:
    - go-network
   ports:
